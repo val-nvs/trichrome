@@ -1,0 +1,234 @@
+
+:root {
+    --dark-bg: #1e1e1e;
+    --dark-surface: #252526;
+    --text-color: #ffffff;
+    --accent-color: #007acc;
+    --border-color: #3e3e40;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-color);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 900px;
+    padding: 20px 15px;
+}
+
+h1, h2 {
+    text-align: center;
+    color: var(--accent-color);
+}
+
+.image-controls {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.image-control-btn {
+    background-color: var(--dark-surface);
+    color: var(--text-color);
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+}
+
+.image-control-btn.selected {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
+}
+
+.image-control-btn:not(.selected):hover {
+    background-color: #3e3e40;
+}
+
+.upload-label {
+    background-color: #4f4f52;
+    padding: 5px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.upload-label:hover {
+    background-color: #5a5a5e;
+}
+
+.hidden-input {
+    display: none;
+}
+
+.overlap-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    max-height: 500px;
+    border: 2px solid var(--border-color);
+    background-color: #000;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.image-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    user-select: none;
+    touch-action: none;
+    cursor: grab;
+    display: none; 
+    max-height: 100%;
+}
+
+.image-wrapper.visible {
+    display: block;
+}
+
+.image-wrapper.selected {
+    z-index: 10;
+}
+
+.overlap-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    opacity: 0.6;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+#intersection-indicator {
+    position: absolute;
+    border: 2px solid red;
+    pointer-events: none;
+    display: none;
+    z-index: 20;
+}
+
+.controls-area {
+    padding: 10px;
+    background-color: var(--dark-surface);
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.arrow-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px auto 10px;
+    width: 150px;
+}
+
+.middle-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin: 5px 0;
+}
+
+.arrow-btn {
+    width: 40px;
+    height: 40px;
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.1s;
+}
+
+.arrow-btn:active {
+    background-color: #005a9e;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.process-btn {
+    flex-grow: 1;
+    padding: 15px;
+    background-color: #38a838;
+    color: var(--text-color);
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.reset-btn {
+    padding: 15px 10px;
+    background-color: #cc4444;
+    color: var(--text-color);
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.process-btn:disabled {
+    background-color: #333;
+    cursor: not-allowed;
+    color: #888;
+}
+
+.results-area {
+    margin-top: 30px;
+    padding: 10px;
+    background-color: var(--dark-surface);
+    border-radius: 8px;
+}
+
+.result-images {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.result-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.result-item p {
+    margin: 0;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.result-item img {
+    height: auto;
+    box-shadow: 0 0 0 1px var(--border-color);
+    width: 100%;
+    max-width: 100%;
+}

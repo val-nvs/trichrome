@@ -2,22 +2,74 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Overlap and Cropping Tool</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Overlap & Dynamic Crop Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Image Overlap and Cropping Tool</h1>
-    </header>
-    <main>
-        <div class="controls">
-            <input type="file" id="image-upload" multiple accept="image/*">
-            <button id="generate-crops">Generate Crops</button>
+
+<div class="container">
+    <h1>✨ Overlap & Dynamic Crop Tool</h1>
+
+    <div class="image-controls">
+        <div class="image-control-btn" data-image-id="a">
+            <span>Image A</span>
+            <label for="image-a-upload" class="upload-label"><i class="fas fa-upload"></i></label>
+            <input type="file" id="image-a-upload" class="hidden-input" accept="image/*">
         </div>
-        <div id="workspace"></div>
-        <div id="results"></div>
-    </main>
-    <script src="main.js"></script>
+        <div class="image-control-btn" data-image-id="b">
+            <span>Image B</span>
+            <label for="image-b-upload" class="upload-label"><i class="fas fa-upload"></i></label>
+            <input type="file" id="image-b-upload" class="hidden-input" accept="image/*">
+        </div>
+        <div class="image-control-btn" data-image-id="c">
+            <span>Image C</span>
+            <label for="image-c-upload" class="upload-label"><i class="fas fa-upload"></i></label>
+            <input type="file" id="image-c-upload" class="hidden-input" accept="image/*">
+        </div>
+        <div class="image-control-btn" data-image-id="d">
+            <span>Image D</span>
+            <label for="image-d-upload" class="upload-label"><i class="fas fa-upload"></i></label>
+            <input type="file" id="image-d-upload" class="hidden-input" accept="image/*">
+        </div>
+    </div>
+
+    <div class="overlap-container">
+        <div id="image-a-wrapper" class="image-wrapper" data-image-id="a"><img id="img-a" class="overlap-image"></div>
+        <div id="image-b-wrapper" class="image-wrapper" data-image-id="b"><img id="img-b" class="overlap-image"></div>
+        <div id="image-c-wrapper" class="image-wrapper" data-image-id="c"><img id="img-c" class="overlap-image"></div>
+        <div id="image-d-wrapper" class="image-wrapper" data-image-id="d"><img id="img-d" class="overlap-image"></div>
+        <div id="intersection-indicator"></div>
+    </div>
+
+    <div class="controls-area">
+        <div class="arrow-controls">
+            <button id="move-up" class="arrow-btn" aria-label="Move Up">▲</button>
+            <div class="middle-row">
+                <button id="move-left" class="arrow-btn" aria-label="Move Left">◀</button>
+                <button id="move-right" class="arrow-btn" aria-label="Move Right">▶</button>
+            </div>
+            <button id="move-down" class="arrow-btn" aria-label="Move Down">▼</button>
+        </div>
+        <div class="action-buttons">
+            <button id="process-btn" class="process-btn" disabled>Generate Cropped Images</button>
+            <button id="reset-all-btn" class="reset-btn">Reset All</button>
+        </div>
+    </div>
+
+    <div class="results-area">
+        <h2>Cropped Results (Intersection)</h2>
+        <div class="result-images" id="results-standard"></div>
+    </div>
+
+    <div class="results-area">
+        <h2>Processed Results (Invert + Desaturate)</h2>
+        <div class="result-images" id="results-processed"></div>
+    </div>
+</div>
+
+<script src="main.js"></script>
+
 </body>
 </html>
