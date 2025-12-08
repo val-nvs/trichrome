@@ -2,58 +2,88 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Overlap & Dynamic Crop Tool</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trichrome | Overlap & Dynamic Crop Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="app-container">
+        <!-- Controls Column -->
+        <div class="controls-container">
+            <header class="app-header">
+                <h1><i class="fa-solid fa-layer-group"></i> Trichrome</h1>
+                <p>An overlap & dynamic crop tool for creating trichrome photos.</p>
+            </header>
 
-<div class="collapsible-menu">
-    <button class="menu-toggle">
-        <h1>✨ Overlap & Dynamic Crop Tool</h1>
-        <i class="fas fa-chevron-down"></i>
-    </button>
-    <div class="menu-content">
-        <div class="container">
-            <p class="dpi-warning">Both images must have been scanned at the same dpi or photographed at the same distance.</p>
-            <div class="image-controls">
-                <div class="image-control-btn unused" data-image-id="a">
-                    <span>Image A</span>
-                    <label for="image-a-upload" class="upload-label">
-                        <i class="fas fa-upload"></i>
-                        <span class="upload-text">Upload</span>
-                    </label>
-                    <input type="file" id="image-a-upload" class="hidden-input" accept="image/*">
-                    <button class="remove-btn hidden" data-image-id="a" aria-label="Remove Image A"><i class="fas fa-trash"></i></button>
+            <section class="control-section">
+                <h2><i class="fa-solid fa-images"></i> Image Selection</h2>
+                <div class="image-controls">
+                    <div class="image-control-btn" data-image-id="a">
+                        <span>Image A</span>
+                        <div>
+                            <label for="file-a" class="upload-label">
+                                <span class="upload-text">Upload</span>
+                                <input type="file" id="file-a" class="hidden-input" accept="image/*">
+                            </label>
+                            <button class="remove-btn hidden" data-image-id="a"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </div>
+                    <div class="image-control-btn" data-image-id="b">
+                        <span>Image B</span>
+                        <div>
+                            <label for="file-b" class="upload-label">
+                                <span class="upload-text">Upload</span>
+                                <input type="file" id="file-b" class="hidden-input" accept="image/*">
+                            </label>
+                            <button class="remove-btn hidden" data-image-id="b"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </div>
+                    <div class="image-control-btn" data-image-id="c">
+                        <span>Image C</span>
+                        <div>
+                            <label for="file-c" class="upload-label">
+                                <span class="upload-text">Upload</span>
+                                <input type="file" id="file-c" class="hidden-input" accept="image/*">
+                            </label>
+                            <button class="remove-btn hidden" data-image-id="c"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </div>
+                    <div class="image-control-btn" data-image-id="d">
+                        <span>Image D</span>
+                        <div>
+                            <label for="file-d" class="upload-label">
+                                <span class="upload-text">Upload</span>
+                                <input type="file" id="file-d" class="hidden-input" accept="image/*">
+                            </label>
+                            <button class="remove-btn hidden" data-image-id="d"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </div>
                 </div>
-                <div class="image-control-btn unused" data-image-id="b">
-                    <span>Image B</span>
-                    <label for="image-b-upload" class="upload-label">
-                        <i class="fas fa-upload"></i>
-                        <span class="upload-text">Upload</span>
-                    </label>
-                    <input type="file" id="image-b-upload" class="hidden-input" accept="image/*">
-                    <button class="remove-btn hidden" data-image-id="b" aria-label="Remove Image B"><i class="fas fa-trash"></i></button>
+            </section>
+
+            <section class="control-section">
+                <h2><i class="fa-solid fa-arrows-up-down-left-right"></i> Adjust Position</h2>
+                <div class="arrow-controls">
+                    <button id="move-up" class="arrow-btn"><i class="fas fa-arrow-up"></i></button>
+                    <div class="middle-row">
+                        <button id="move-left" class="arrow-btn"><i class="fas fa-arrow-left"></i></button>
+                        <button id="move-right" class="arrow-btn"><i class="fas fa-arrow-right"></i></button>
+                    </div>
+                    <button id="move-down" class="arrow-btn"><i class="fas fa-arrow-down"></i></button>
                 </div>
-                <div class="image-control-btn unused" data-image-id="c">
-                    <span>Image C</span>
-                    <label for="image-c-upload" class="upload-label">
-                        <i class="fas fa-upload"></i>
-                        <span class="upload-text">Upload</span>
-                    </label>
-                    <input type="file" id="image-c-upload" class="hidden-input" accept="image/*">
-                    <button class="remove-btn hidden" data-image-id="c" aria-label="Remove Image C"><i class="fas fa-trash"></i></button>
-                </div>
-                <div class="image-control-btn unused" data-image-id="d">
-                    <span>Image D</span>
-                    <label for="image-d-upload" class="upload-label">
-                        <i class="fas fa-upload"></i>
-                        <span class="upload-text">Upload</span>
-                    </label>
-                    <input type="file" id="image-d-upload" class="hidden-input" accept="image/*">
-                    <button class="remove-btn hidden" data-image-id="d" aria-label="Remove Image D"><i class="fas fa-trash"></i></button>
-                </div>
+            </section>
+
+            <footer class="app-footer">
+                <button id="process-btn" class="process-btn" disabled><i class="fa-solid fa-crop"></i> Generate</button>
+                <button id="reset-all-btn" class="reset-btn"><i class="fa-solid fa-arrows-rotate"></i> Reset</button>
+            </footer>
+        </div>
+
+        <!-- Preview Column -->
+        <div class="preview-container">
+            <div id="dpi-warning" class="dpi-warning" style="display: none;">
+                <strong>Warning:</strong> Your screen resolution might cause the image handles to be smaller than expected.
             </div>
 
             <div class="overlap-container">
@@ -64,45 +94,16 @@
                 <div id="intersection-indicator"></div>
             </div>
 
-            <div class="controls-area">
-                <div class="arrow-controls">
-                    <button id="move-up" class="arrow-btn" aria-label="Move Up">▲</button>
-                    <div class="middle-row">
-                        <button id="move-left" class="arrow-btn" aria-label="Move Left">◀</button>
-                        <button id="move-right" class="arrow-btn" aria-label="Move Right">▶</button>
-                    </div>
-                    <button id="move-down" class="arrow-btn" aria-label="Move Down">▼</button>
-                </div>
-                <div class="action-buttons">
-                    <button id="process-btn" class="process-btn" disabled>Generate Cropped Images</button>
-                    <button id="reset-all-btn" class="reset-btn">Reset All</button>
-                </div>
-            </div>
-
             <div class="results-area">
-                <h2>Cropped Results (Intersection)</h2>
-                <div class="result-images" id="results-standard">
-                    <div class="result-placeholder"></div>
-                    <div class="result-placeholder"></div>
-                    <div class="result-placeholder"></div>
-                    <div class="result-placeholder"></div>
-                </div>
+                <h2><i class="fa-solid fa-square-check"></i> Standard Intersection</h2>
+                <div id="results-standard" class="result-images"></div>
             </div>
-
             <div class="results-area">
-                <h2>Processed Results (Invert + Desaturate)</h2>
-                <div class="result-images" id="results-processed">
-                    <div class="result-placeholder"></div>
-                    <div class="result-placeholder"></div>
-                    <div class="result-placeholder"></div>
-                    <div class="result-placeholder"></div>
-                </div>
+                <h2><i class="fa-solid fa-wand-magic-sparkles"></i> Processed Intersection</h2>
+                <div id="results-processed" class="result-images"></div>
             </div>
         </div>
     </div>
-</div>
-
-<script src="main.js"></script>
-
+    <script src="main.js"></script>
 </body>
 </html>

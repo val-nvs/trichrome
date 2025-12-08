@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- DPI WARNING ---
+    if (window.devicePixelRatio > 1) {
+        const warning = document.getElementById('dpi-warning');
+        if(warning) warning.style.display = 'block';
+    }
+
     // --- COLLAPSIBLE MENU ---
     const menuToggle = document.querySelector('.menu-toggle');
     const menuContent = document.querySelector('.menu-content');
@@ -59,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const imageId = btn.dataset.imageId;
             const state = imageState[imageId];
             const removeBtn = btn.querySelector('.remove-btn');
+            const uploadText = btn.querySelector('.upload-text');
 
             btn.classList.remove('selected', 'locked', 'unused');
 
@@ -67,11 +74,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     btn.classList.add('selected');
                 }
                 removeBtn.classList.remove('hidden');
+                if (uploadText) uploadText.textContent = 'Change';
             } else {
                 if (firstEmptySlot === -1) {
                     firstEmptySlot = index;
                 }
                 removeBtn.classList.add('hidden');
+                if (uploadText) uploadText.textContent = 'Upload';
+                
                 if (index > firstEmptySlot) {
                     btn.classList.add('locked');
                 } else {
@@ -87,7 +97,9 @@ document.addEventListener('DOMContentLoaded', () => {
         updateButtonStates();
 
         Object.values(imageState).forEach(state => {
-            state.wrapper.classList.toggle('selected', state.wrapper.dataset.imageId === imageId);
+            const isSelected = state.wrapper.dataset.imageId === imageId;
+            state.wrapper.classList.toggle('selected', isSelected);
+            state.wrapper.style.zIndex = isSelected ? 10 : 1;
         });
     };
 
@@ -109,18 +121,14 @@ document.addEventListener('DOMContentLoaded', () => {
         state.wrapper.classList.remove('visible', 'selected');
         state.visible = false;
         updatePosition(imageId, 0, 0);
-    
-        const controlBtn = document.querySelector(`.image-control-btn[data-image-id="${imageId}"]`);
-        if (controlBtn) {
-            const uploadText = controlBtn.querySelector('.upload-text');
-            if (uploadText) {
-                uploadText.textContent = 'Upload';
-            }
-        }
-    
+
         if (selectedImageId === imageId) {
             const visibleIds = Object.keys(imageState).filter(id => imageState[id].visible);
-            selectedImageId = visibleIds.length > 0 ? visibleIds[0] : null;
+            if (visibleIds.length > 0) {
+                selectImage(visibleIds[0]);
+            } else {
+                selectedImageId = null;
+            }
         }
     
         calculateIntersection();
@@ -180,6 +188,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!state.visible || !intersectionBox) return;
 
         const { img, x, y } = state;
+        if (!img.complete || img.naturalWidth === 0) return;
+
         const scale = img.naturalWidth / img.width;
 
         const canvas = document.createElement('canvas');
@@ -207,11 +217,11 @@ document.addEventListener('DOMContentLoaded', () => {
         resultItem.className = 'result-item';
         resultItem.innerHTML = `<p>Image ${imageId.toUpperCase()}</p><img src="${canvas.toDataURL()}">`;
         
-        const placeholder = resultContainer.querySelector('.result-placeholder');
+        const placeholder = resultContainer.querySelector(`.result-placeholder[data-image-id-placeholder="${imageId}"]`);
         if (placeholder) {
             resultContainer.replaceChild(resultItem, placeholder);
         } else {
-            resultContainer.appendChild(resultItem);
+             resultContainer.appendChild(resultItem);
         }
     };
 
@@ -222,14 +232,6 @@ document.addEventListener('DOMContentLoaded', () => {
             state.wrapper.classList.remove('visible', 'selected');
             state.visible = false;
             updatePosition(id, 0, 0);
-        
-            const controlBtn = document.querySelector(`.image-control-btn[data-image-id="${id}"]`);
-            if (controlBtn) {
-                const uploadText = controlBtn.querySelector('.upload-text');
-                if (uploadText) {
-                    uploadText.textContent = 'Upload';
-                }
-            }
         });
         
         initializePlaceholders();
@@ -268,14 +270,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     const state = imageState[imageId];
                     state.img.src = event.target.result;
 
-                    const controlBtn = document.querySelector(`.image-control-btn[data-image-id="${imageId}"]`);
-                    if(controlBtn) {
-                        const uploadText = controlBtn.querySelector('.upload-text');
-                        if (uploadText) {
-                            uploadText.textContent = 'Change';
-                        }
-                    }
-
                     state.img.onload = () => {
                         if (!masterScaleInfo) {
                             const scaleX = container.offsetWidth / state.img.naturalWidth;
@@ -295,7 +289,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             const initialX = (container.offsetWidth - state.img.offsetWidth) / 2;
                             const initialY = (container.offsetHeight - state.img.offsetHeight) / 2;
                             updatePosition(imageId, initialX, initialY);
-                            
                             selectImage(imageId);
                         }, 0);
                     };
@@ -309,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', () => {
             if (!selectedImageId) return;
             let { x, y } = imageState[selectedImageId];
-            const step = 1; // 1px movement
+            const step = 10; // 10px movement
             switch (btn.id) {
                 case 'move-up': y -= step; break;
                 case 'move-down': y += step; break;
@@ -327,7 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
-        initializePlaceholders(); // Clear previous results and show placeholders
+        initializePlaceholders();
 
         Object.keys(imageState).forEach(id => {
             if (imageState[id].visible) {
@@ -352,9 +345,11 @@ document.addEventListener('DOMContentLoaded', () => {
         isDragging = true;
         wrapper.style.cursor = 'grabbing';
 
-        const coords = e.touches ? e.touches[0] : e;
-        startX = coords.clientX;
-        startY = coords.clientY;
+        const eventX = e.touches ? e.touches[0].clientX : e.clientX;
+        const eventY = e.touches ? e.touches[0].clientY : e.clientY;
+
+        startX = eventX;
+        startY = eventY;
         initialX = imageState[imageId].x;
         initialY = imageState[imageId].y;
         
@@ -364,9 +359,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const drag = (e) => {
         if (!isDragging || !selectedImageId) return;
 
-        const coords = e.touches ? e.touches[0] : e;
-        const dx = coords.clientX - startX;
-        const dy = coords.clientY - startY;
+        const eventX = e.touches ? e.touches[0].clientX : e.clientX;
+        const eventY = e.touches ? e.touches[0].clientY : e.clientY;
+
+        const dx = eventX - startX;
+        const dy = eventY - startY;
 
         updatePosition(selectedImageId, initialX + dx, initialY + dy);
     };
