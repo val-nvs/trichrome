@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         d: { wrapper: document.getElementById('image-d-wrapper'), img: document.getElementById('img-d'), x: 0, y: 0, visible: false },
     };
     let selectedImageId = null;
-    let masterScaleInfo = null; // To store scale of the first image
+    let masterScaleInfo = null;
 
     // --- DOM ELEMENTS ---
     const controlBtns = document.querySelectorAll('.image-control-btn');
@@ -38,19 +38,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- CORE FUNCTIONS ---
 
+    const initializePlaceholders = () => {
+        resultsStandard.innerHTML = '';
+        resultsProcessed.innerHTML = '';
+        for (let i = 0; i < 4; i++) {
+            const placeholder = document.createElement('div');
+            placeholder.className = 'result-placeholder';
+            resultsStandard.appendChild(placeholder.cloneNode());
+            resultsProcessed.appendChild(placeholder.cloneNode());
+        }
+    };
+
     const updateButtonStates = () => {
         const visibleImagesCount = Object.values(imageState).filter(s => s.visible).length;
         processBtn.disabled = visibleImagesCount < 2;
+
+        let firstEmptySlot = -1;
+
+        controlBtns.forEach((btn, index) => {
+            const imageId = btn.dataset.imageId;
+            const state = imageState[imageId];
+            const removeBtn = btn.querySelector('.remove-btn');
+
+            btn.classList.remove('selected', 'locked', 'unused');
+
+            if (state.visible) {
+                if (selectedImageId === imageId) {
+                    btn.classList.add('selected');
+                }
+                removeBtn.classList.remove('hidden');
+            } else {
+                if (firstEmptySlot === -1) {
+                    firstEmptySlot = index;
+                }
+                removeBtn.classList.add('hidden');
+                if (index > firstEmptySlot) {
+                    btn.classList.add('locked');
+                } else {
+                    btn.classList.add('unused');
+                }
+            }
+        });
     };
 
     const selectImage = (imageId) => {
         if (!imageState[imageId] || !imageState[imageId].visible) return;
-
         selectedImageId = imageId;
-
-        controlBtns.forEach(btn => {
-            btn.classList.toggle('selected', btn.dataset.imageId === imageId);
-        });
+        updateButtonStates();
 
         Object.values(imageState).forEach(state => {
             state.wrapper.classList.toggle('selected', state.wrapper.dataset.imageId === imageId);
@@ -66,6 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         state.wrapper.style.transform = `translate(${newX}px, ${newY}px)`;
         calculateIntersection();
     };
+
     const removeImage = (imageId) => {
         const state = imageState[imageId];
         if (!state) return;
@@ -84,7 +119,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     
         if (selectedImageId === imageId) {
-            selectedImageId = null;
+            const visibleIds = Object.keys(imageState).filter(id => imageState[id].visible);
+            selectedImageId = visibleIds.length > 0 ? visibleIds[0] : null;
         }
     
         calculateIntersection();
@@ -170,17 +206,35 @@ document.addEventListener('DOMContentLoaded', () => {
         const resultItem = document.createElement('div');
         resultItem.className = 'result-item';
         resultItem.innerHTML = `<p>Image ${imageId.toUpperCase()}</p><img src="${canvas.toDataURL()}">`;
-        resultContainer.appendChild(resultItem);
+        
+        const placeholder = resultContainer.querySelector('.result-placeholder');
+        if (placeholder) {
+            resultContainer.replaceChild(resultItem, placeholder);
+        } else {
+            resultContainer.appendChild(resultItem);
+        }
     };
 
     const resetAll = () => {
         Object.keys(imageState).forEach(id => {
-           removeImage(id);
+            const state = imageState[id];
+            state.img.src = '';
+            state.wrapper.classList.remove('visible', 'selected');
+            state.visible = false;
+            updatePosition(id, 0, 0);
+        
+            const controlBtn = document.querySelector(`.image-control-btn[data-image-id="${id}"]`);
+            if (controlBtn) {
+                const uploadText = controlBtn.querySelector('.upload-text');
+                if (uploadText) {
+                    uploadText.textContent = 'Upload';
+                }
+            }
         });
-        resultsStandard.innerHTML = '';
-        resultsProcessed.innerHTML = '';
+        
+        initializePlaceholders();
         selectedImageId = null;
-        masterScaleInfo = null; // Reset master scale
+        masterScaleInfo = null;
         calculateIntersection();
         updateButtonStates();
     };
@@ -189,13 +243,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     controlBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
-            if (e.target.tagName !== 'LABEL' && e.target.tagName !== 'I' && e.target.tagName !== 'SPAN') {
+            if (btn.classList.contains('locked')) return;
+            if (!e.target.closest('.remove-btn') && !e.target.closest('label')) {
                 selectImage(btn.dataset.imageId);
             }
         });
     });
+
     removeBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
+            e.stopPropagation();
             const imageId = e.currentTarget.dataset.imageId;
             removeImage(imageId);
         });
@@ -220,33 +277,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     state.img.onload = () => {
-
                         if (!masterScaleInfo) {
-                            // This is the first image, establish master scale
                             const scaleX = container.offsetWidth / state.img.naturalWidth;
                             const scaleY = container.offsetHeight / state.img.naturalHeight;
                             const scale = Math.min(scaleX, scaleY);
                             masterScaleInfo = { scale };
                         }
                         
-                        // Apply scale
                         const { scale } = masterScaleInfo;
                         state.img.style.width = `${state.img.naturalWidth * scale}px`;
                         state.img.style.height = `${state.img.naturalHeight * scale}px`;
                         
-                        // Finalize state and position
                         state.wrapper.classList.add('visible');
                         state.visible = true;
 
-                        // Use a timeout to ensure offsetWidth/Height are correct after style change
                         setTimeout(() => {
                             const initialX = (container.offsetWidth - state.img.offsetWidth) / 2;
                             const initialY = (container.offsetHeight - state.img.offsetHeight) / 2;
                             updatePosition(imageId, initialX, initialY);
                             
                             selectImage(imageId);
-                            updateButtonStates();
-                            calculateIntersection();
                         }, 0);
                     };
                 };
@@ -276,8 +326,9 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Images do not overlap sufficiently.');
             return;
         }
-        resultsStandard.innerHTML = '';
-        resultsProcessed.innerHTML = '';
+        
+        initializePlaceholders(); // Clear previous results and show placeholders
+
         Object.keys(imageState).forEach(id => {
             if (imageState[id].visible) {
                 generateAndDisplayCrop(id, resultsStandard, intersectionBox, false);

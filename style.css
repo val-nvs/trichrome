@@ -5,6 +5,7 @@
     --text-color: #ffffff;
     --accent-color: #007acc;
     --border-color: #3e3e40;
+    --disabled-color: #3a3a3d;
 }
 
 body {
@@ -72,6 +73,16 @@ body {
     padding: 20px 15px;
 }
 
+.dpi-warning {
+    text-align: center;
+    color: #f8d7da;
+    background-color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
 h1, h2 {
     text-align: center;
     color: var(--accent-color);
@@ -91,20 +102,37 @@ h1, h2 {
     border-radius: 5px;
     border: 1px solid var(--border-color);
     cursor: pointer;
-    transition: background-color 0.2s, border-color 0.2s;
+    transition: background-color 0.2s, border-color 0.2s, opacity 0.3s;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 14px;
 }
 
+.image-control-btn.unused {
+    opacity: 0.7;
+}
+
+.image-control-btn.locked {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.image-control-btn.locked .upload-label {
+    pointer-events: none;
+    background-color: var(--disabled-color);
+    cursor: not-allowed;
+}
+
+
 .image-control-btn.selected {
     background-color: var(--accent-color);
     border-color: var(--accent-color);
     color: white;
+    opacity: 1;
 }
 
-.image-control-btn:not(.selected):hover {
+.image-control-btn:not(.selected):not(.locked):hover {
     background-color: #3e3e40;
 }
 
@@ -114,14 +142,28 @@ h1, h2 {
     border-radius: 4px;
     cursor: pointer;
     font-size: 12px;
+    transition: background-color 0.2s;
 }
 
 .upload-label:hover {
     background-color: #5a5a5e;
 }
 
-.hidden-input {
+.hidden-input, .remove-btn.hidden {
     display: none;
+}
+
+.remove-btn {
+    background: none;
+    border: none;
+    color: #cc4444;
+    cursor: pointer;
+    font-size: 1.1em;
+    padding: 5px;
+}
+
+.remove-btn:hover {
+    color: #ff6b6b;
 }
 
 .overlap-container {
@@ -279,6 +321,15 @@ h1, h2 {
     width: 100%;
     max-width: 100%;
 }
+
+.result-placeholder {
+    background-color: var(--dark-surface);
+    border: 2px dashed var(--border-color);
+    border-radius: 5px;
+    width: 150px;
+    height: 150px;
+}
+
 @media screen and (min-width: 1200px) {
     body {
         padding: 0 200px;

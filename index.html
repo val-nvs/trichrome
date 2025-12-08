@@ -16,42 +16,43 @@
     </button>
     <div class="menu-content">
         <div class="container">
+            <p class="dpi-warning">Both images must have been scanned at the same dpi or photographed at the same distance.</p>
             <div class="image-controls">
-                <div class="image-control-btn" data-image-id="a">
+                <div class="image-control-btn unused" data-image-id="a">
                     <span>Image A</span>
                     <label for="image-a-upload" class="upload-label">
                         <i class="fas fa-upload"></i>
                         <span class="upload-text">Upload</span>
                     </label>
                     <input type="file" id="image-a-upload" class="hidden-input" accept="image/*">
-                    <button class="remove-btn" data-image-id="a" aria-label="Remove Image A"><i class="fas fa-trash"></i></button>
+                    <button class="remove-btn hidden" data-image-id="a" aria-label="Remove Image A"><i class="fas fa-trash"></i></button>
                 </div>
-                <div class="image-control-btn" data-image-id="b">
+                <div class="image-control-btn unused" data-image-id="b">
                     <span>Image B</span>
                     <label for="image-b-upload" class="upload-label">
                         <i class="fas fa-upload"></i>
                         <span class="upload-text">Upload</span>
                     </label>
                     <input type="file" id="image-b-upload" class="hidden-input" accept="image/*">
-                    <button class="remove-btn" data-image-id="b" aria-label="Remove Image B"><i class="fas fa-trash"></i></button>
+                    <button class="remove-btn hidden" data-image-id="b" aria-label="Remove Image B"><i class="fas fa-trash"></i></button>
                 </div>
-                <div class="image-control-btn" data-image-id="c">
+                <div class="image-control-btn unused" data-image-id="c">
                     <span>Image C</span>
                     <label for="image-c-upload" class="upload-label">
                         <i class="fas fa-upload"></i>
                         <span class="upload-text">Upload</span>
                     </label>
                     <input type="file" id="image-c-upload" class="hidden-input" accept="image/*">
-                    <button class="remove-btn" data-image-id="c" aria-label="Remove Image C"><i class="fas fa-trash"></i></button>
+                    <button class="remove-btn hidden" data-image-id="c" aria-label="Remove Image C"><i class="fas fa-trash"></i></button>
                 </div>
-                <div class="image-control-btn" data-image-id="d">
+                <div class="image-control-btn unused" data-image-id="d">
                     <span>Image D</span>
                     <label for="image-d-upload" class="upload-label">
                         <i class="fas fa-upload"></i>
                         <span class="upload-text">Upload</span>
                     </label>
                     <input type="file" id="image-d-upload" class="hidden-input" accept="image/*">
-                    <button class="remove-btn" data-image-id="d" aria-label="Remove Image D"><i class="fas fa-trash"></i></button>
+                    <button class="remove-btn hidden" data-image-id="d" aria-label="Remove Image D"><i class="fas fa-trash"></i></button>
                 </div>
             </div>
 
@@ -80,12 +81,22 @@
 
             <div class="results-area">
                 <h2>Cropped Results (Intersection)</h2>
-                <div class="result-images" id="results-standard"></div>
+                <div class="result-images" id="results-standard">
+                    <div class="result-placeholder"></div>
+                    <div class="result-placeholder"></div>
+                    <div class="result-placeholder"></div>
+                    <div class="result-placeholder"></div>
+                </div>
             </div>
 
             <div class="results-area">
                 <h2>Processed Results (Invert + Desaturate)</h2>
-                <div class="result-images" id="results-processed"></div>
+                <div class="result-images" id="results-processed">
+                    <div class="result-placeholder"></div>
+                    <div class="result-placeholder"></div>
+                    <div class="result-placeholder"></div>
+                    <div class="result-placeholder"></div>
+                </div>
             </div>
         </div>
     </div>
