@@ -1,4 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- COLLAPSIBLE MENU ---
+    const menuToggle = document.querySelector('.menu-toggle');
+    const menuContent = document.querySelector('.menu-content');
+
+    if (menuToggle && menuContent) {
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            if (menuContent.style.maxHeight) {
+                menuContent.style.maxHeight = null;
+            } else {
+                menuContent.style.maxHeight = menuContent.scrollHeight + "px";
+            }
+        });
+    }
+
     // --- STATE MANAGEMENT ---
     const imageState = {
         a: { wrapper: document.getElementById('image-a-wrapper'), img: document.getElementById('img-a'), x: 0, y: 0, visible: false },
@@ -12,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- DOM ELEMENTS ---
     const controlBtns = document.querySelectorAll('.image-control-btn');
     const fileInputs = document.querySelectorAll('.hidden-input');
+    const removeBtns = document.querySelectorAll('.remove-btn');
     const arrowBtns = document.querySelectorAll('.arrow-btn');
     const processBtn = document.getElementById('process-btn');
     const resetBtn = document.getElementById('reset-all-btn');
@@ -49,6 +65,30 @@ document.addEventListener('DOMContentLoaded', () => {
         state.y = newY;
         state.wrapper.style.transform = `translate(${newX}px, ${newY}px)`;
         calculateIntersection();
+    };
+    const removeImage = (imageId) => {
+        const state = imageState[imageId];
+        if (!state) return;
+    
+        state.img.src = '';
+        state.wrapper.classList.remove('visible', 'selected');
+        state.visible = false;
+        updatePosition(imageId, 0, 0);
+    
+        const controlBtn = document.querySelector(`.image-control-btn[data-image-id="${imageId}"]`);
+        if (controlBtn) {
+            const uploadText = controlBtn.querySelector('.upload-text');
+            if (uploadText) {
+                uploadText.textContent = 'Upload';
+            }
+        }
+    
+        if (selectedImageId === imageId) {
+            selectedImageId = null;
+        }
+    
+        calculateIntersection();
+        updateButtonStates();
     };
 
     const getImageBounds = (imageId) => {
@@ -135,15 +175,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const resetAll = () => {
         Object.keys(imageState).forEach(id => {
-            const state = imageState[id];
-            state.img.src = '';
-            state.img.style.width = 'auto';
-            state.img.style.height = 'auto';
-            state.wrapper.classList.remove('visible', 'selected');
-            state.visible = false;
-            updatePosition(id, 0, 0);
+           removeImage(id);
         });
-        controlBtns.forEach(btn => btn.classList.remove('selected'));
         resultsStandard.innerHTML = '';
         resultsProcessed.innerHTML = '';
         selectedImageId = null;
@@ -156,9 +189,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     controlBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
-            if (e.target.tagName !== 'LABEL' && e.target.tagName !== 'I') {
+            if (e.target.tagName !== 'LABEL' && e.target.tagName !== 'I' && e.target.tagName !== 'SPAN') {
                 selectImage(btn.dataset.imageId);
             }
+        });
+    });
+    removeBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const imageId = e.currentTarget.dataset.imageId;
+            removeImage(imageId);
         });
     });
 
@@ -171,6 +210,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 reader.onload = (event) => {
                     const state = imageState[imageId];
                     state.img.src = event.target.result;
+
+                    const controlBtn = document.querySelector(`.image-control-btn[data-image-id="${imageId}"]`);
+                    if(controlBtn) {
+                        const uploadText = controlBtn.querySelector('.upload-text');
+                        if (uploadText) {
+                            uploadText.textContent = 'Change';
+                        }
+                    }
+
                     state.img.onload = () => {
 
                         if (!masterScaleInfo) {

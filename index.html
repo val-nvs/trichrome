@@ -9,63 +9,85 @@
 </head>
 <body>
 
-<div class="container">
-    <h1>✨ Overlap & Dynamic Crop Tool</h1>
-
-    <div class="image-controls">
-        <div class="image-control-btn" data-image-id="a">
-            <span>Image A</span>
-            <label for="image-a-upload" class="upload-label"><i class="fas fa-upload"></i></label>
-            <input type="file" id="image-a-upload" class="hidden-input" accept="image/*">
-        </div>
-        <div class="image-control-btn" data-image-id="b">
-            <span>Image B</span>
-            <label for="image-b-upload" class="upload-label"><i class="fas fa-upload"></i></label>
-            <input type="file" id="image-b-upload" class="hidden-input" accept="image/*">
-        </div>
-        <div class="image-control-btn" data-image-id="c">
-            <span>Image C</span>
-            <label for="image-c-upload" class="upload-label"><i class="fas fa-upload"></i></label>
-            <input type="file" id="image-c-upload" class="hidden-input" accept="image/*">
-        </div>
-        <div class="image-control-btn" data-image-id="d">
-            <span>Image D</span>
-            <label for="image-d-upload" class="upload-label"><i class="fas fa-upload"></i></label>
-            <input type="file" id="image-d-upload" class="hidden-input" accept="image/*">
-        </div>
-    </div>
-
-    <div class="overlap-container">
-        <div id="image-a-wrapper" class="image-wrapper" data-image-id="a"><img id="img-a" class="overlap-image"></div>
-        <div id="image-b-wrapper" class="image-wrapper" data-image-id="b"><img id="img-b" class="overlap-image"></div>
-        <div id="image-c-wrapper" class="image-wrapper" data-image-id="c"><img id="img-c" class="overlap-image"></div>
-        <div id="image-d-wrapper" class="image-wrapper" data-image-id="d"><img id="img-d" class="overlap-image"></div>
-        <div id="intersection-indicator"></div>
-    </div>
-
-    <div class="controls-area">
-        <div class="arrow-controls">
-            <button id="move-up" class="arrow-btn" aria-label="Move Up">▲</button>
-            <div class="middle-row">
-                <button id="move-left" class="arrow-btn" aria-label="Move Left">◀</button>
-                <button id="move-right" class="arrow-btn" aria-label="Move Right">▶</button>
+<div class="collapsible-menu">
+    <button class="menu-toggle">
+        <h1>✨ Overlap & Dynamic Crop Tool</h1>
+        <i class="fas fa-chevron-down"></i>
+    </button>
+    <div class="menu-content">
+        <div class="container">
+            <div class="image-controls">
+                <div class="image-control-btn" data-image-id="a">
+                    <span>Image A</span>
+                    <label for="image-a-upload" class="upload-label">
+                        <i class="fas fa-upload"></i>
+                        <span class="upload-text">Upload</span>
+                    </label>
+                    <input type="file" id="image-a-upload" class="hidden-input" accept="image/*">
+                    <button class="remove-btn" data-image-id="a" aria-label="Remove Image A"><i class="fas fa-trash"></i></button>
+                </div>
+                <div class="image-control-btn" data-image-id="b">
+                    <span>Image B</span>
+                    <label for="image-b-upload" class="upload-label">
+                        <i class="fas fa-upload"></i>
+                        <span class="upload-text">Upload</span>
+                    </label>
+                    <input type="file" id="image-b-upload" class="hidden-input" accept="image/*">
+                    <button class="remove-btn" data-image-id="b" aria-label="Remove Image B"><i class="fas fa-trash"></i></button>
+                </div>
+                <div class="image-control-btn" data-image-id="c">
+                    <span>Image C</span>
+                    <label for="image-c-upload" class="upload-label">
+                        <i class="fas fa-upload"></i>
+                        <span class="upload-text">Upload</span>
+                    </label>
+                    <input type="file" id="image-c-upload" class="hidden-input" accept="image/*">
+                    <button class="remove-btn" data-image-id="c" aria-label="Remove Image C"><i class="fas fa-trash"></i></button>
+                </div>
+                <div class="image-control-btn" data-image-id="d">
+                    <span>Image D</span>
+                    <label for="image-d-upload" class="upload-label">
+                        <i class="fas fa-upload"></i>
+                        <span class="upload-text">Upload</span>
+                    </label>
+                    <input type="file" id="image-d-upload" class="hidden-input" accept="image/*">
+                    <button class="remove-btn" data-image-id="d" aria-label="Remove Image D"><i class="fas fa-trash"></i></button>
+                </div>
             </div>
-            <button id="move-down" class="arrow-btn" aria-label="Move Down">▼</button>
-        </div>
-        <div class="action-buttons">
-            <button id="process-btn" class="process-btn" disabled>Generate Cropped Images</button>
-            <button id="reset-all-btn" class="reset-btn">Reset All</button>
-        </div>
-    </div>
 
-    <div class="results-area">
-        <h2>Cropped Results (Intersection)</h2>
-        <div class="result-images" id="results-standard"></div>
-    </div>
+            <div class="overlap-container">
+                <div id="image-a-wrapper" class="image-wrapper" data-image-id="a"><img id="img-a" class="overlap-image"></div>
+                <div id="image-b-wrapper" class="image-wrapper" data-image-id="b"><img id="img-b" class="overlap-image"></div>
+                <div id="image-c-wrapper" class="image-wrapper" data-image-id="c"><img id="img-c" class="overlap-image"></div>
+                <div id="image-d-wrapper" class="image-wrapper" data-image-id="d"><img id="img-d" class="overlap-image"></div>
+                <div id="intersection-indicator"></div>
+            </div>
 
-    <div class="results-area">
-        <h2>Processed Results (Invert + Desaturate)</h2>
-        <div class="result-images" id="results-processed"></div>
+            <div class="controls-area">
+                <div class="arrow-controls">
+                    <button id="move-up" class="arrow-btn" aria-label="Move Up">▲</button>
+                    <div class="middle-row">
+                        <button id="move-left" class="arrow-btn" aria-label="Move Left">◀</button>
+                        <button id="move-right" class="arrow-btn" aria-label="Move Right">▶</button>
+                    </div>
+                    <button id="move-down" class="arrow-btn" aria-label="Move Down">▼</button>
+                </div>
+                <div class="action-buttons">
+                    <button id="process-btn" class="process-btn" disabled>Generate Cropped Images</button>
+                    <button id="reset-all-btn" class="reset-btn">Reset All</button>
+                </div>
+            </div>
+
+            <div class="results-area">
+                <h2>Cropped Results (Intersection)</h2>
+                <div class="result-images" id="results-standard"></div>
+            </div>
+
+            <div class="results-area">
+                <h2>Processed Results (Invert + Desaturate)</h2>
+                <div class="result-images" id="results-processed"></div>
+            </div>
+        </div>
     </div>
 </div>
 

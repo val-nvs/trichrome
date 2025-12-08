@@ -7,7 +7,7 @@ This project is an interactive tool for overlapping and dynamically cropping ima
 ## Implemented Features
 
 ### Image Loading and Display
-- Users can upload four images (A, B, C, D) using file input buttons.
+- Users can upload up to four images (A, B, C, D) using file input buttons.
 - The uploaded images are displayed in an overlap container.
 
 ### Image Manipulation
@@ -27,3 +27,4 @@ This project is an interactive tool for overlapping and dynamically cropping ima
 ## Current Plan
 
 - Restore the project to its previous state after accidental file deletion.
+- Push the restored project files to the GitHub repository.
