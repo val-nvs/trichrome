@@ -5,21 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if(warning) warning.style.display = 'block';
     }
 
-    // --- COLLAPSIBLE MENU ---
-    const menuToggle = document.querySelector('.menu-toggle');
-    const menuContent = document.querySelector('.menu-content');
-
-    if (menuToggle && menuContent) {
-        menuToggle.addEventListener('click', () => {
-            menuToggle.classList.toggle('active');
-            if (menuContent.style.maxHeight) {
-                menuContent.style.maxHeight = null;
-            } else {
-                menuContent.style.maxHeight = menuContent.scrollHeight + "px";
-            }
-        });
-    }
-
     // --- STATE MANAGEMENT ---
     const imageState = {
         a: { wrapper: document.getElementById('image-a-wrapper'), img: document.getElementById('img-a'), x: 0, y: 0, visible: false },
@@ -59,9 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const visibleImagesCount = Object.values(imageState).filter(s => s.visible).length;
         processBtn.disabled = visibleImagesCount < 2;
 
-        let firstEmptySlot = -1;
-
-        controlBtns.forEach((btn, index) => {
+        controlBtns.forEach(btn => {
             const imageId = btn.dataset.imageId;
             const state = imageState[imageId];
             const removeBtn = btn.querySelector('.remove-btn');
@@ -70,23 +53,17 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.classList.remove('selected', 'locked', 'unused');
 
             if (state.visible) {
+                // Image is uploaded and visible
+                removeBtn.classList.remove('hidden');
+                if (uploadText) uploadText.textContent = 'Change';
                 if (selectedImageId === imageId) {
                     btn.classList.add('selected');
                 }
-                removeBtn.classList.remove('hidden');
-                if (uploadText) uploadText.textContent = 'Change';
             } else {
-                if (firstEmptySlot === -1) {
-                    firstEmptySlot = index;
-                }
+                // No image, button is available for upload
                 removeBtn.classList.add('hidden');
                 if (uploadText) uploadText.textContent = 'Upload';
-                
-                if (index > firstEmptySlot) {
-                    btn.classList.add('locked');
-                } else {
-                    btn.classList.add('unused');
-                }
+                btn.classList.add('unused');
             }
         });
     };
@@ -245,7 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     controlBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
-            if (btn.classList.contains('locked')) return;
             if (!e.target.closest('.remove-btn') && !e.target.closest('label')) {
                 selectImage(btn.dataset.imageId);
             }
@@ -371,7 +347,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const endDrag = (e) => {
         if (!isDragging || !selectedImageId) return;
         isDragging = false;
-        imageState[selectedImageId].wrapper.style.cursor = 'grab';
+        if (imageState[selectedImageId]) {
+            imageState[selectedImageId].wrapper.style.cursor = 'grab';
+        }
     };
 
     Object.values(imageState).forEach(state => {
